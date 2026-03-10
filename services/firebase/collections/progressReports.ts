@@ -68,3 +68,40 @@ export const publishReport = async (reportId: string): Promise<void> => {
     updatedAt: Date.now(),
   });
 };
+
+export const updateReport = async (
+  reportId: string,
+  updates: Partial<ProgressReport>,
+): Promise<void> => {
+  await updateDoc(doc(firestore, 'progressReports', reportId), {
+    ...updates,
+    updatedAt: Date.now(),
+  });
+};
+
+// Get all published reports for a parent — pass the parent's linked studentIds
+export const getReportsForParent = async (studentIds: string[]): Promise<ProgressReport[]> => {
+  if (studentIds.length === 0) return [];
+  try {
+    const chunks: string[][] = [];
+    for (let i = 0; i < studentIds.length; i += 10) {
+      chunks.push(studentIds.slice(i, i + 10));
+    }
+    const results = await Promise.all(
+      chunks.map(async chunk => {
+        const q = query(
+          collection(firestore, 'progressReports'),
+          where('studentId', 'in', chunk),
+          where('isPublished', '==', true),
+          orderBy('createdAt', 'desc'),
+        );
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as ProgressReport));
+      }),
+    );
+    return results.flat().sort((a, b) => (b.createdAt as number) - (a.createdAt as number));
+  } catch (error) {
+    console.error('Error getting parent reports:', error);
+    return [];
+  }
+};

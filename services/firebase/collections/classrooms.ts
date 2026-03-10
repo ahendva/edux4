@@ -3,14 +3,12 @@ import { firestore } from '../firebaseConfig';
 import {
   doc,
   getDoc,
-  setDoc,
   updateDoc,
   deleteDoc,
   collection,
   getDocs,
   query,
   where,
-  orderBy,
   addDoc,
   arrayUnion,
   arrayRemove,
@@ -43,12 +41,18 @@ export const getClassroom = async (classroomId: string): Promise<Classroom | nul
   }
 };
 
-export const getUserClassrooms = async (userId: string): Promise<Classroom[]> => {
+export const getUserClassrooms = async (
+  userId: string,
+  includeArchived = false,
+): Promise<Classroom[]> => {
   try {
-    const classroomsRef = collection(firestore, 'classrooms');
-    const q = query(classroomsRef, where('participantIds', 'array-contains', userId));
+    const q = query(
+      collection(firestore, 'classrooms'),
+      where('participantIds', 'array-contains', userId),
+    );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Classroom));
+    const all = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Classroom));
+    return includeArchived ? all : all.filter(c => !c.isArchived);
   } catch (error) {
     console.error('Error getting user classrooms:', error);
     return [];
@@ -80,6 +84,66 @@ export const addParticipant = async (classroomId: string, userId: string): Promi
 export const removeParticipant = async (classroomId: string, userId: string): Promise<void> => {
   const docRef = doc(firestore, 'classrooms', classroomId);
   await updateDoc(docRef, { participantIds: arrayRemove(userId) });
+};
+
+export const archiveClassroom = async (classroomId: string): Promise<void> => {
+  await updateDoc(doc(firestore, 'classrooms', classroomId), {
+    isArchived: true,
+    updatedAt: Date.now(),
+  });
+};
+
+export const getActiveClassrooms = async (userId: string): Promise<Classroom[]> => {
+  try {
+    const q = query(
+      collection(firestore, 'classrooms'),
+      where('participantIds', 'array-contains', userId),
+      where('isArchived', '==', false),
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Classroom));
+  } catch {
+    // Fallback: some classrooms may not have isArchived field; filter client-side
+    const all = await getUserClassrooms(userId);
+    return all.filter(c => !c.isArchived);
+  }
+};
+
+// Find classroom by 6-char join code
+export const findClassroomByJoinCode = async (joinCode: string): Promise<Classroom | null> => {
+  try {
+    const q = query(
+      collection(firestore, 'classrooms'),
+      where('joinCode', '==', joinCode.toUpperCase()),
+    );
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) return null;
+    const d = snapshot.docs[0];
+    return { id: d.id, ...d.data() } as Classroom;
+  } catch (error) {
+    console.error('Error finding classroom by join code:', error);
+    return null;
+  }
+};
+
+export const addStudentToClassroom = async (
+  classroomId: string,
+  studentId: string,
+): Promise<void> => {
+  await updateDoc(doc(firestore, 'classrooms', classroomId), {
+    studentIds: arrayUnion(studentId),
+    updatedAt: Date.now(),
+  });
+};
+
+export const removeStudentFromClassroom = async (
+  classroomId: string,
+  studentId: string,
+): Promise<void> => {
+  await updateDoc(doc(firestore, 'classrooms', classroomId), {
+    studentIds: arrayRemove(studentId),
+    updatedAt: Date.now(),
+  });
 };
 
 export const deleteClassroom = async (classroomId: string): Promise<void> => {

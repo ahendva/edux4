@@ -5,14 +5,14 @@ import {
   collection,
   getDocs,
   query,
-  where,
   orderBy,
   limit,
   addDoc,
   updateDoc,
   deleteDoc,
-  startAfter,
-  increment,
+  onSnapshot,
+  arrayUnion,
+  Unsubscribe,
 } from 'firebase/firestore';
 import { Message } from '../schema';
 
@@ -21,6 +21,7 @@ export const sendMessage = async (
   senderId: string,
   text: string,
   attachmentUrl?: string,
+  attachmentName?: string,
   attachmentType?: string,
 ): Promise<string> => {
   try {
@@ -31,13 +32,14 @@ export const sendMessage = async (
       senderId,
       text,
       attachmentUrl: attachmentUrl || null,
+      attachmentName: attachmentName || null,
       attachmentType: attachmentType || null,
       readBy: [senderId],
       createdAt: now,
       updatedAt: now,
     });
 
-    // Update conversation's last message
+    // Update conversation's last message preview
     const convRef = doc(firestore, 'conversations', conversationId);
     await updateDoc(convRef, {
       lastMessage: text.substring(0, 100),
@@ -60,12 +62,27 @@ export const getMessages = async (
     const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(messageLimit));
     const snapshot = await getDocs(q);
     return snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() } as Message))
+      .map(d => ({ id: d.id, ...d.data() } as Message))
       .reverse();
   } catch (error) {
     console.error('Error getting messages:', error);
     return [];
   }
+};
+
+// Real-time listener — returns unsubscribe function
+export const subscribeToMessages = (
+  conversationId: string,
+  callback: (messages: Message[]) => void,
+): Unsubscribe => {
+  const q = query(
+    collection(firestore, 'conversations', conversationId, 'messages'),
+    orderBy('createdAt', 'asc'),
+  );
+  return onSnapshot(q, snapshot => {
+    const messages = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Message));
+    callback(messages);
+  });
 };
 
 export const markAsRead = async (
@@ -74,9 +91,44 @@ export const markAsRead = async (
   userId: string,
 ): Promise<void> => {
   const msgRef = doc(firestore, 'conversations', conversationId, 'messages', messageId);
-  await updateDoc(msgRef, {
-    readBy: (await import('firebase/firestore')).arrayUnion(userId),
-  });
+  await updateDoc(msgRef, { readBy: arrayUnion(userId) });
+};
+
+export const markAllRead = async (
+  conversationId: string,
+  userId: string,
+): Promise<void> => {
+  try {
+    const q = query(
+      collection(firestore, 'conversations', conversationId, 'messages'),
+      orderBy('createdAt', 'desc'),
+      limit(50),
+    );
+    const snapshot = await getDocs(q);
+    const unread = snapshot.docs.filter(
+      d => !((d.data().readBy as string[]) || []).includes(userId),
+    );
+    await Promise.all(
+      unread.map(d =>
+        updateDoc(d.ref, { readBy: arrayUnion(userId) }),
+      ),
+    );
+    // Reset unread count on conversation
+    const convRef = doc(firestore, 'conversations', conversationId);
+    await updateDoc(convRef, { [`unreadCounts.${userId}`]: 0 });
+  } catch (error) {
+    console.error('Error marking all read:', error);
+  }
+};
+
+export const saveTranslation = async (
+  conversationId: string,
+  messageId: string,
+  lang: string,
+  translatedText: string,
+): Promise<void> => {
+  const msgRef = doc(firestore, 'conversations', conversationId, 'messages', messageId);
+  await updateDoc(msgRef, { [`translatedText.${lang}`]: translatedText });
 };
 
 export const deleteMessage = async (

@@ -5,11 +5,12 @@ import {
   collection,
   getDocs,
   query,
-  where,
   orderBy,
   addDoc,
   updateDoc,
   deleteDoc,
+  onSnapshot,
+  Unsubscribe,
 } from 'firebase/firestore';
 import { Announcement } from '../schema';
 
@@ -37,6 +38,20 @@ export const getAnnouncements = async (classroomId: string): Promise<Announcemen
     console.error('Error getting announcements:', error);
     return [];
   }
+};
+
+// Real-time listener for a classroom's announcements
+export const subscribeToAnnouncements = (
+  classroomId: string,
+  callback: (announcements: Announcement[]) => void,
+): Unsubscribe => {
+  const q = query(
+    collection(firestore, 'classrooms', classroomId, 'announcements'),
+    orderBy('createdAt', 'desc'),
+  );
+  return onSnapshot(q, snapshot => {
+    callback(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Announcement)));
+  });
 };
 
 export const pinAnnouncement = async (classroomId: string, announcementId: string, isPinned: boolean): Promise<void> => {
