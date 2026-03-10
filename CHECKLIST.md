@@ -664,20 +664,20 @@ service cloud.firestore {
 > **Goal:** Admin dashboard, full sync coverage, real-time updates.
 
 ### 12.1 Admin Sync Dashboard
-- [ ] `app/(tabs)/admin.tsx` — Admin-only tab (hidden for non-admin roles):
-  - [ ] Show `sync_status` per collection (last sync time, records synced, status)
-  - [ ] "Run Full Sync" button with progress indicator
-  - [ ] "Sync Students", "Sync Sections", etc. — per-collection sync buttons
-  - [ ] Error log: show `sync_status.{collection}.error` if set
-- [ ] `app/admin/sync-status.tsx` — Detailed sync status with retry button per collection
+- [x] `app/(tabs)/admin.tsx` — Admin-only tab (hidden for non-admin roles):
+  - [x] Show `sync_status` per collection (last sync time, records synced, status)
+  - [x] "Run Full Sync" button with progress indicator
+  - [x] Error log: show `sync_status.{collection}.error` if set
+  - [x] App stats cards: users, classrooms, students, conversations
+- [x] `app/admin/sync-status.tsx` — Detailed sync status with retry button per collection
 - [x] Update `app/(tabs)/_layout.tsx` — show Admin tab only when `isAdmin == true`
 
 ### 12.2 Guardian → Parent Account Linking
-- [ ] After `syncGuardians()` runs, show in Admin dashboard:
-  - Count: "X guardian emails matched to parent accounts"
-  - Count: "Y guardians have no matching account (email not registered)"
-- [ ] Allow admin to manually link guardian email → parent UID from admin screen
-- [ ] `app/admin/link-parents.tsx` — list unmatched guardians, search existing users, link button
+- [x] After `syncGuardians()` runs, show in Admin dashboard:
+  - [x] Count: "X guardian emails matched to parent accounts"
+  - [x] Count: "Y guardians have no matching account (email not registered)"
+- [x] Allow admin to manually link guardian email → parent UID from admin screen
+- [x] `app/admin/link-parents.tsx` — list unmatched guardians, search existing users, link button
 
 ### 12.3 Incremental Sync
 - [ ] `sync.ts` — Read `sync_status.{collection}.lastSyncAt` before each sync

@@ -13,6 +13,7 @@ export default function AdminLayout() {
       }}
     >
       <Stack.Screen name="sync-status" options={{ title: 'Sync Dashboard' }} />
+      <Stack.Screen name="link-parents" options={{ title: 'Link Parents' }} />
     </Stack>
   );
 }
