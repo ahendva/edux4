@@ -93,7 +93,15 @@ export default function ConnectionsListScreen() {
         />
       </View>
 
-      {/* Pending requests shortcut */}
+      {/* Quick links */}
+      <TouchableOpacity
+        style={[styles.requestsLink, { backgroundColor: colors.surface }]}
+        onPress={() => router.push('/connections/search')}
+      >
+        <Ionicons name="person-add-outline" size={18} color={colors.primary} />
+        <Text style={[styles.requestsText, { color: colors.text }]}>Find People</Text>
+        <Ionicons name="chevron-forward" size={16} color={colors.gray} />
+      </TouchableOpacity>
       <TouchableOpacity
         style={[styles.requestsLink, { backgroundColor: colors.surface }]}
         onPress={() => router.push('/connections/requests')}

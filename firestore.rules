@@ -1,0 +1,133 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ─────────────────────────────────────────────────────────────
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function hasRole(role) {
+      return isAuthenticated() && getUserData().role == role;
+    }
+
+    function isTeacher() { return hasRole('teacher'); }
+    function isParent()  { return hasRole('parent'); }
+    function isAdmin()   { return hasRole('admin'); }
+
+    function isTeacherOrAdmin() { return isTeacher() || isAdmin(); }
+
+    // ── users ────────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId);
+      // Users can update their own profile; admins can update any
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── classrooms ───────────────────────────────────────────────────────────
+    match /classrooms/{classroomId} {
+      // Authenticated users can read classrooms (students' parents need to see classroom info)
+      allow read: if isAuthenticated();
+      // Only teachers and admins can create/update/delete classrooms
+      allow create: if isTeacherOrAdmin();
+      allow update: if isTeacherOrAdmin();
+      allow delete: if isAdmin();
+
+      // Announcements subcollection
+      match /announcements/{annId} {
+        allow read: if isAuthenticated();
+        allow create: if isTeacherOrAdmin();
+        allow update: if isTeacherOrAdmin();
+        allow delete: if isTeacherOrAdmin();
+      }
+    }
+
+    // ── students ─────────────────────────────────────────────────────────────
+    match /students/{studentId} {
+      // Teachers can read all; parents can only read their linked children
+      allow read: if isTeacherOrAdmin()
+        || (isParent() && request.auth.uid in resource.data.parentIds);
+      allow create: if isTeacherOrAdmin();
+      allow update: if isTeacherOrAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── conversations ────────────────────────────────────────────────────────
+    match /conversations/{convId} {
+      allow read: if isAuthenticated()
+        && request.auth.uid in resource.data.participantIds;
+      allow create: if isAuthenticated()
+        && request.auth.uid in request.resource.data.participantIds;
+      allow update: if isAuthenticated()
+        && request.auth.uid in resource.data.participantIds;
+      allow delete: if isAdmin();
+
+      // Messages subcollection
+      match /messages/{msgId} {
+        allow read: if isAuthenticated()
+          && request.auth.uid in get(/databases/$(database)/documents/conversations/$(convId)).data.participantIds;
+        allow create: if isAuthenticated()
+          && request.auth.uid in get(/databases/$(database)/documents/conversations/$(convId)).data.participantIds
+          && request.resource.data.senderId == request.auth.uid;
+        // Sender can delete their own messages; translation updates via Cloud Functions
+        allow update: if isAuthenticated()
+          && (resource.data.senderId == request.auth.uid
+              || request.auth.uid in get(/databases/$(database)/documents/conversations/$(convId)).data.participantIds);
+        allow delete: if isAuthenticated() && resource.data.senderId == request.auth.uid;
+      }
+    }
+
+    // ── events ────────────────────────────────────────────────────────────────
+    match /events/{eventId} {
+      allow read: if isAuthenticated();
+      allow create: if isTeacherOrAdmin();
+      allow update: if isTeacherOrAdmin()
+        || (isAuthenticated() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rsvps', 'rsvpCounts']));
+      allow delete: if isTeacherOrAdmin();
+    }
+
+    // ── progressReports ───────────────────────────────────────────────────────
+    match /progressReports/{reportId} {
+      // Teachers read/write; parents read only published reports for their children
+      allow read: if isTeacherOrAdmin()
+        || (isParent() && resource.data.isPublished == true
+            && request.auth.uid in get(/databases/$(database)/documents/students/$(resource.data.studentId)).data.parentIds);
+      allow create: if isTeacherOrAdmin();
+      allow update: if isTeacherOrAdmin();
+      allow delete: if isTeacherOrAdmin();
+    }
+
+    // ── connectionRequests ────────────────────────────────────────────────────
+    match /connectionRequests/{requestId} {
+      allow read: if isAuthenticated()
+        && (resource.data.fromUserId == request.auth.uid
+            || resource.data.toUserId == request.auth.uid);
+      allow create: if isAuthenticated()
+        && request.resource.data.fromUserId == request.auth.uid;
+      // Only the recipient can update (accept/reject)
+      allow update: if isAuthenticated()
+        && resource.data.toUserId == request.auth.uid;
+      allow delete: if isAuthenticated()
+        && (resource.data.fromUserId == request.auth.uid
+            || resource.data.toUserId == request.auth.uid);
+    }
+
+    // ── sync_status ────────────────────────────────────────────────────────────
+    match /sync_status/{collection} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

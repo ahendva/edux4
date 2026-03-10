@@ -219,6 +219,18 @@ export default function ProfileScreen() {
         })}
       </View>
 
+      {/* Admin section */}
+      {userProfile?.role === 'admin' && (
+        <View style={[styles.card, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Admin</Text>
+          <TouchableOpacity style={styles.row} onPress={() => router.push('/admin/sync-status')}>
+            <Ionicons name="sync-outline" size={20} color={colors.primary} />
+            <Text style={[styles.rowLabel, { color: colors.text }]}>Sync Dashboard</Text>
+            <Ionicons name="chevron-forward" size={18} color={colors.gray} />
+          </TouchableOpacity>
+        </View>
+      )}
+
       {/* Account */}
       <View style={[styles.card, { backgroundColor: colors.surface }]}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Account</Text>
@@ -230,6 +242,11 @@ export default function ProfileScreen() {
         <TouchableOpacity style={styles.row} onPress={() => router.push('/connections/requests')}>
           <Ionicons name="person-add-outline" size={20} color={colors.primary} />
           <Text style={[styles.rowLabel, { color: colors.text }]}>Connection Requests</Text>
+          <Ionicons name="chevron-forward" size={18} color={colors.gray} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.row} onPress={() => router.push('/auth/delete-account')}>
+          <Ionicons name="trash-outline" size={20} color={colors.danger} />
+          <Text style={[styles.rowLabel, { color: colors.danger }]}>Delete Account</Text>
           <Ionicons name="chevron-forward" size={18} color={colors.gray} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.row} onPress={handleLogout}>

@@ -14,6 +14,7 @@ export default function ConnectionsLayout() {
     >
       <Stack.Screen name="index" options={{ title: 'Connections' }} />
       <Stack.Screen name="requests" options={{ title: 'Connection Requests' }} />
+      <Stack.Screen name="search" options={{ title: 'Find People' }} />
       <Stack.Screen name="[id]" options={{ title: 'Profile' }} />
     </Stack>
   );

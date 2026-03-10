@@ -15,6 +15,7 @@ import {
   Unsubscribe,
 } from 'firebase/firestore';
 import { Message } from '../schema';
+import { translateMessageToAll } from '../../translation';
 
 export const sendMessage = async (
   conversationId: string,
@@ -46,6 +47,9 @@ export const sendMessage = async (
       lastMessageAt: now,
       updatedAt: now,
     });
+
+    // Trigger translation in background — don't await, non-blocking
+    translateMessageToAll(conversationId, docRef.id, text).catch(console.error);
 
     return docRef.id;
   } catch (error) {

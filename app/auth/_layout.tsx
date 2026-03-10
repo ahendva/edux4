@@ -29,6 +29,7 @@ export default function AuthLayout() {
           ),
         }}
       />
+      <Stack.Screen name="delete-account" options={{ title: 'Delete Account' }} />
     </Stack>
   );
 }

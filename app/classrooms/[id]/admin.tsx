@@ -22,7 +22,8 @@ import {
   pinAnnouncement,
   deleteAnnouncement,
 } from '../../../services/firebase/collections/announcements';
-import { Classroom, Announcement } from '../../../services/firebase/schema';
+import { getStudentsInClassroom } from '../../../services/firebase/collections/students';
+import { Classroom, Announcement, Student } from '../../../services/firebase/schema';
 
 export default function AdminPanelScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -33,6 +34,7 @@ export default function AdminPanelScreen() {
 
   const [classroom, setClassroom] = useState<Classroom | null>(null);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
 
   // New announcement state
@@ -43,9 +45,10 @@ export default function AdminPanelScreen() {
   const load = useCallback(async () => {
     if (!id) return;
     try {
-      const [cls, ann] = await Promise.all([getClassroom(id), getAnnouncements(id)]);
+      const [cls, ann, studs] = await Promise.all([getClassroom(id), getAnnouncements(id), getStudentsInClassroom(id)]);
       setClassroom(cls);
       setAnnouncements(ann);
+      setStudents(studs);
       if (cls) navigation.setOptions({ title: `${cls.name} — Admin` });
     } catch (err) {
       console.error(err);
@@ -199,19 +202,24 @@ export default function AdminPanelScreen() {
       {/* Students */}
       <View style={[styles.section, { paddingBottom: 40 }]}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>
-          Students ({classroom?.studentIds?.length ?? 0})
+          Students ({students.length})
         </Text>
-        {(classroom?.studentIds?.length ?? 0) === 0 ? (
+        {students.length === 0 ? (
           <Text style={[styles.empty, { color: colors.gray }]}>No students enrolled.</Text>
         ) : (
-          classroom?.studentIds?.map(sid => (
+          students.map(student => (
             <TouchableOpacity
-              key={sid}
+              key={student.id}
               style={[styles.studentRow, { backgroundColor: colors.surface }]}
-              onPress={() => router.push(`/classrooms/${id}/students/${sid}`)}
+              onPress={() => router.push(`/classrooms/${id}/students/${student.id}`)}
             >
               <Ionicons name="person-outline" size={18} color={colors.primary} />
-              <Text style={[styles.studentId, { color: colors.text }]}>{sid}</Text>
+              <Text style={[styles.studentId, { color: colors.text }]}>
+                {student.firstName} {student.lastName}
+              </Text>
+              {student.grade ? (
+                <Text style={[styles.gradeLabel, { color: colors.gray }]}>Grade {student.grade}</Text>
+              ) : null}
               <Ionicons name="chevron-forward" size={16} color={colors.gray} />
             </TouchableOpacity>
           ))
@@ -241,4 +249,5 @@ const styles = StyleSheet.create({
   empty: { fontSize: 14 },
   studentRow: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12, borderRadius: 10, marginBottom: 6 },
   studentId: { flex: 1, fontSize: 14 },
+  gradeLabel: { fontSize: 12 },
 });

@@ -459,7 +459,7 @@ Append `?expansions=<list>` to student requests to include nested objects:
 
 ---
 
-## Phase 9: Translation Service *(not started)*
+## Phase 9: Translation Service *(done)*
 > **Goal:** Messages auto-translate based on user language preference.
 
 ### 9.1 Translation API Setup
@@ -494,7 +494,7 @@ Spanish, English, Chinese (Simplified), Vietnamese, Arabic, Tagalog, Haitian Cre
 
 ---
 
-## Phase 10: Push Notifications *(not started)*
+## Phase 10: Push Notifications *(done)*
 > **Goal:** Users get push notifications for all relevant events.
 
 ### 10.1 Client Setup
@@ -547,7 +547,7 @@ Spanish, English, Chinese (Simplified), Vietnamese, Arabic, Tagalog, Haitian Cre
 
 ---
 
-## Phase 11: Firestore Security Rules *(not started)*
+## Phase 11: Firestore Security Rules *(done)*
 > **Goal:** All data access is locked down by role and ownership.
 
 ### 11.1 Write Rules File
@@ -660,7 +660,7 @@ service cloud.firestore {
 
 ---
 
-## Phase 12: PowerSchool Deep Integration *(not started)*
+## Phase 12: PowerSchool Deep Integration *(partial — sync dashboard done)*
 > **Goal:** Admin dashboard, full sync coverage, real-time updates.
 
 ### 12.1 Admin Sync Dashboard
@@ -702,7 +702,7 @@ service cloud.firestore {
 
 ---
 
-## Phase 13: Testing *(not started)*
+## Phase 13: Testing *(partial — unit tests + CI done)*
 > **Goal:** Core business logic has test coverage. App passes CI.
 
 ### 13.1 Test Setup
@@ -771,7 +771,7 @@ service cloud.firestore {
 
 ---
 
-## Phase 14: Polish & Ship *(not started)*
+## Phase 14: Polish & Ship *(partial — SkeletonCard, EmptyState, OfflineBanner, delete-account done)*
 > **Goal:** Production-ready UX, performance, compliance, documentation.
 
 ### 14.1 Skeleton Loading States
@@ -884,19 +884,19 @@ service cloud.firestore {
 |-------|-------------|--------|
 | 0 | Bootstrap & Environment | Partial (needs verify) |
 | 1 | Firebase Infrastructure | Done |
-| 2 | Data Model & Schema | Done (needs additions) |
-| 3 | Theme & Styling | Done (minor additions) |
-| 4 | Auth & User System | Done (needs schema additions) |
-| 5 | Collection Services | Done (needs additions) |
-| 6 | PowerSchool Integration | Partial (client done, sync incomplete) |
-| 7 | Tab Screens | Shells done (needs wiring) |
-| 8 | Feature Screens | Shells done (needs real data) |
-| 9 | Translation Service | Not started |
-| 10 | Push Notifications | Not started |
-| 11 | Firestore Security Rules | Not started |
-| 12 | PS Deep Integration | Not started |
-| 13 | Testing | Not started |
-| 14 | Polish & Ship | Not started |
+| 2 | Data Model & Schema | Done |
+| 3 | Theme & Styling | Done |
+| 4 | Auth & User System | Done |
+| 5 | Collection Services | Done |
+| 6 | PowerSchool Integration | Done (client + sync engine) |
+| 7 | Tab Screens | Done (live Firestore data) |
+| 8 | Feature Screens | Done (live data, real student names, events, connections) |
+| 9 | Translation Service | Done (Google Translate + AsyncStorage cache) |
+| 10 | Push Notifications | Done (expo-notifications + 5 Cloud Functions) |
+| 11 | Firestore Security Rules | Done (firestore.rules deployed) |
+| 12 | PS Deep Integration | Partial (sync dashboard done; scheduled sync pending) |
+| 13 | Testing | Partial (unit tests + CI pipeline done; emulator tests pending) |
+| 14 | Polish & Ship | Partial (SkeletonCard, EmptyState, OfflineBanner, delete-account done) |
 
 ## Recommended Build Order
 
