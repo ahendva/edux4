@@ -40,8 +40,8 @@
 > **Goal:** All TypeScript interfaces defined for every Firestore document.
 
 - [x] `services/firebase/schema.ts` — UserProfile, Classroom, Student, Conversation, Message, CalendarEvent, ProgressReport, Announcement, ConnectionRequest, SyncStatus, SubjectGrade
-- [ ] `lib/types/models.ts` — Re-export schema types + add utility types (e.g. `WithTimestamps<T>`, `CreateInput<T>`)
-- [ ] `lib/types/index.ts` — Barrel re-export
+- [x] `lib/types/models.ts` — Re-export schema types + add utility types (e.g. `WithTimestamps<T>`, `CreateInput<T>`)
+- [x] `lib/types/index.ts` — Barrel re-export
 
 ---
 
@@ -92,7 +92,7 @@
 - [x] `services/powerschool/types.ts` — PSStudent, PSSection, PSStaff, PSGradeEntry, PSGPA, PSAttendance, PSSchool, PSTerm
 - [x] `services/powerschool/client.ts` — OAuth 2.0 token management, auto-refresh, all REST endpoints
 - [x] `services/powerschool/sync.ts` — syncStudents, syncSections, syncSectionStudents, runFullSync
-- [ ] `services/powerschool/index.ts` — Barrel export
+- [x] `services/powerschool/index.ts` — Barrel export
 - [ ] Add PS sync error handling — retry with backoff on 429/5xx
 - [ ] Add PS pagination support — handle `page` and `pagesize` query params for large datasets
 - [ ] Add PS grade sync — pull final grades per student per section, write to progressReports
@@ -123,38 +123,38 @@
 
 ---
 
-## Phase 8: Feature Screens *(not started)*
+## Phase 8: Feature Screens *(done)*
 > **Goal:** Full detail/create/edit screens for every domain entity.
 
 ### 8.1 Messaging
-- [ ] `app/messages/_layout.tsx` — Stack navigator for message screens
-- [ ] `app/messages/[id].tsx` — Conversation thread: message bubbles, sender avatar, timestamps, translation toggle, attachment support, input bar with send button
-- [ ] `app/messages/new.tsx` — New conversation: recipient search (connections), subject line, compose first message
+- [x] `app/messages/_layout.tsx` — Stack navigator for message screens
+- [x] `app/messages/[id].tsx` — Conversation thread: message bubbles, sender avatar, timestamps, translation toggle, attachment support, input bar with send button
+- [x] `app/messages/new.tsx` — New conversation: recipient search (connections), subject line, compose first message
 
 ### 8.2 Classrooms
-- [ ] `app/classrooms/_layout.tsx` — Stack navigator
-- [ ] `app/classrooms/index.tsx` — Full classroom directory with search and filters
-- [ ] `app/classrooms/create.tsx` — Create classroom form: name, subject, grade, description, image
-- [ ] `app/classrooms/[id].tsx` — Classroom detail: announcements feed, student roster, upcoming events, progress reports link
-- [ ] `app/classrooms/[id]/admin.tsx` — Teacher admin panel: manage students, post announcements, create events
-- [ ] `app/classrooms/[id]/manage.tsx` — Edit classroom: name, subject, grade, image
-- [ ] `app/classrooms/[id]/students/[studentId].tsx` — Student detail: grades, attendance chart, parent contact button
+- [x] `app/classrooms/_layout.tsx` — Stack navigator
+- [x] `app/classrooms/index.tsx` — Full classroom directory with search and filters
+- [x] `app/classrooms/create.tsx` — Create classroom form: name, subject, grade, description, image
+- [x] `app/classrooms/[id].tsx` — Classroom detail: announcements feed, student roster, upcoming events, progress reports link
+- [x] `app/classrooms/[id]/admin.tsx` — Teacher admin panel: manage students, post announcements, create events
+- [x] `app/classrooms/[id]/manage.tsx` — Edit classroom: name, subject, grade, image
+- [x] `app/classrooms/[id]/students/[studentId].tsx` — Student detail: grades, attendance chart, parent contact button
 
 ### 8.3 Events
-- [ ] `app/events/_layout.tsx` — Stack navigator
-- [ ] `app/events/[id].tsx` — Event detail: title, description, date/time, location, RSVP button, attendee list
-- [ ] `app/events/create.tsx` — Create event: title, date/time picker, type selector, classroom selector, description, recurring toggle
+- [x] `app/events/_layout.tsx` — Stack navigator
+- [x] `app/events/[id].tsx` — Event detail: title, description, date/time, location, RSVP button, attendee list
+- [x] `app/events/create.tsx` — Create event: title, date/time picker, type selector, classroom selector, description, recurring toggle
 
 ### 8.4 Progress Reports
-- [ ] `app/reports/_layout.tsx` — Stack navigator
-- [ ] `app/reports/[id].tsx` — View report: student name, period, subject grades table, teacher comments
-- [ ] `app/reports/create.tsx` — Create report (teachers only): student picker, term, subject grades entry, comments, publish button
+- [x] `app/reports/_layout.tsx` — Stack navigator
+- [x] `app/reports/[id].tsx` — View report: student name, period, subject grades table, teacher comments
+- [x] `app/reports/create.tsx` — Create report (teachers only): student picker, term, subject grades entry, comments, publish button
 
 ### 8.5 Connections
-- [ ] `app/connections/_layout.tsx` — Stack navigator
-- [ ] `app/connections/index.tsx` — All connections list with search
-- [ ] `app/connections/requests.tsx` — Pending connection requests (incoming/outgoing)
-- [ ] `app/connections/[id].tsx` — Connection profile: name, role, classrooms in common, message button
+- [x] `app/connections/_layout.tsx` — Stack navigator
+- [x] `app/connections/index.tsx` — All connections list with search
+- [x] `app/connections/requests.tsx` — Pending connection requests (incoming/outgoing)
+- [x] `app/connections/[id].tsx` — Connection profile: name, role, classrooms in common, message button
 
 ---
 
@@ -299,13 +299,13 @@
 |-------|-------------|-------|--------|
 | 0 | Bootstrap & Environment | 6 | **Done** (needs verify) |
 | 1 | Firebase Infrastructure | 5 | **Done** |
-| 2 | Data Model & Schema | 1 (+2 todo) | **Done** (core) |
+| 2 | Data Model & Schema | 3 | **Done** |
 | 3 | Theme & Styling | 7 | **Done** |
 | 4 | Auth & User System | 9 | **Done** |
 | 5 | Collection Services | 7 | **Done** |
-| 6 | PowerSchool Client | 3 (+5 todo) | **Partial** |
+| 6 | PowerSchool Client | 4 (+4 todo) | **Partial** |
 | 7 | Tab Screens | 9 | **Done** (needs wiring) |
-| 8 | Feature Screens | ~18 | Not started |
+| 8 | Feature Screens | 18 | **Done** |
 | 9 | Translation | ~3 | Not started |
 | 10 | Push Notifications | ~6 | Not started |
 | 11 | Security Rules | 1 | Not started |
@@ -313,7 +313,7 @@
 | 13 | Testing | ~12 | Not started |
 | 14 | Polish & Ship | ~8 | Not started |
 
-**Estimated total files remaining: ~60**
+**Estimated total files remaining: ~40**
 
 ---
 
