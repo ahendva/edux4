@@ -1,6 +1,5 @@
 // services/firebase/schema.ts
 // EduX4 Firestore document interfaces
-import { Timestamp } from "firebase/firestore";
 
 // ─── Enums & Constants ───────────────────────────────────────────────────────
 
@@ -13,8 +12,9 @@ export type RSVPStatus = "going" | "maybe" | "not_going";
 
 export interface BaseEntity {
   id: string;
-  createdAt?: number | Timestamp;
-  updatedAt?: number | Timestamp;
+  /** Unix epoch ms — set with Date.now() on write; Firestore may return number or {seconds,nanoseconds} */
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 // ─── Users ───────────────────────────────────────────────────────────────────

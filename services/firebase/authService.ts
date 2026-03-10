@@ -1,6 +1,5 @@
 // services/firebase/authService.ts
 import { auth } from './firebaseConfig';
-import { FirebaseError } from 'firebase/app';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -37,7 +36,7 @@ export const signUp = async (
 
     return user;
   } catch (error) {
-    const errorCode = (error instanceof FirebaseError ? error.code : '');
+    const errorCode = (error as { code?: string })?.code ?? '';
 
     if (errorCode === 'auth/email-already-in-use') {
       throw new Error('This email is already in use. Please try a different one or sign in.');
@@ -68,7 +67,7 @@ export const signIn = async (email: string, password: string): Promise<User> => 
 
     return user;
   } catch (error) {
-    const errorCode = (error instanceof FirebaseError ? error.code : '');
+    const errorCode = (error as { code?: string })?.code ?? '';
 
     if (errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
       throw new Error('Invalid email or password. Please try again.');
@@ -101,7 +100,7 @@ export const resetPassword = async (email: string): Promise<void> => {
 
     await sendPasswordResetEmail(auth, email);
   } catch (error) {
-    const errorCode = (error instanceof FirebaseError ? error.code : '');
+    const errorCode = (error as { code?: string })?.code ?? '';
 
     if (errorCode === 'auth/invalid-email') {
       throw error;

@@ -7,7 +7,7 @@ import { updateFcmToken } from '../firebase/collections/users';
 let Notifications: typeof import('expo-notifications') | null = null;
 try {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  Notifications = require('expo-notifications');
+  Notifications = ((globalThis as unknown as { require?: NodeRequire }).require?.('expo-notifications') ?? null) as typeof import('expo-notifications') | null;
 } catch {
   // expo-notifications not installed; push notifications disabled
 }

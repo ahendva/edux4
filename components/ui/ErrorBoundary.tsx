@@ -16,28 +16,34 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
+  // Explicit declarations so TypeScript resolves these without requiring @types/react
+  declare props: Readonly<Props>;
+  declare setState: (updater: Partial<State> | ((prev: State) => Partial<State>)) => void;
+
   state: State = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
+  componentDidCatch(error: Error, info: React.ErrorInfo): void {
     console.error('[ErrorBoundary] Caught error:', error, info.componentStack);
     captureException(error, { context: this.props.context, componentStack: info.componentStack });
   }
 
-  reset = () => {
+  reset = (): void => {
     this.setState({ hasError: false, error: null });
   };
 
-  render() {
+  render(): ReactNode {
     if (this.state.hasError && this.state.error) {
       if (this.props.fallback) {
         return this.props.fallback(this.state.error, this.reset);
       }
 
-      const userMessage = __DEV__
+      // __DEV__ is a React Native global; fall back to false when not defined
+      const isDev = typeof __DEV__ !== 'undefined' && __DEV__;
+      const userMessage = isDev
         ? this.state.error.message
         : 'An unexpected error occurred. Please try again.';
 
@@ -51,7 +57,11 @@ class ErrorBoundary extends Component<Props, State> {
             <Text style={localStyles.buttonText}>Try Again</Text>
           </TouchableOpacity>
           {this.props.onGoBack && (
-            <TouchableOpacity style={[localStyles.button, localStyles.secondaryButton]} onPress={this.props.onGoBack} accessibilityRole="button">
+            <TouchableOpacity
+              style={[localStyles.button, localStyles.secondaryButton]}
+              onPress={this.props.onGoBack}
+              accessibilityRole="button"
+            >
               <Text style={[localStyles.buttonText, localStyles.secondaryButtonText]}>Go Back</Text>
             </TouchableOpacity>
           )}

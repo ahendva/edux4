@@ -78,7 +78,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [scheme, setScheme] = useState<ColorScheme>('basic');
   const [mode, setMode] = useState<ThemeMode>(systemColorScheme === 'dark' ? 'dark' : 'light');
 
-  const colors = Colors[scheme][mode] as ThemeColors;
+  const colors = Colors[scheme as ColorScheme][mode as ThemeMode] as ThemeColors;
   const typography = createTypography();
   const barStyle = mode === 'light' ? 'dark-content' : 'light-content';
 

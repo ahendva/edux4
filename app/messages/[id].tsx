@@ -37,7 +37,7 @@ export default function ConversationScreen() {
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const listRef = useRef<FlatList>(null);
+  const listRef = useRef<{ scrollToOffset(opts: { offset: number; animated?: boolean }): void; scrollToEnd(opts?: { animated?: boolean }): void } | null>(null);
   const scrolledToEnd = useRef(false);
 
   // Load conversation metadata + participant profiles

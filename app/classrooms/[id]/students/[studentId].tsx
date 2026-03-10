@@ -92,21 +92,21 @@ export default function StudentDetailScreen() {
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Attendance</Text>
           <View style={styles.attendanceRow}>
             <View style={styles.attendanceStat}>
-              <Text style={[styles.statNum, { color: colors.success }]}>{attendance.present}</Text>
+              <Text style={[styles.statNum, { color: colors.success }]}>{attendance.presentCount}</Text>
               <Text style={[styles.statLabel, { color: colors.gray }]}>Present</Text>
             </View>
             <View style={styles.attendanceStat}>
-              <Text style={[styles.statNum, { color: colors.danger }]}>{attendance.absent}</Text>
+              <Text style={[styles.statNum, { color: colors.danger }]}>{attendance.absentCount}</Text>
               <Text style={[styles.statLabel, { color: colors.gray }]}>Absent</Text>
             </View>
             <View style={styles.attendanceStat}>
-              <Text style={[styles.statNum, { color: colors.warning }]}>{attendance.tardy}</Text>
+              <Text style={[styles.statNum, { color: colors.warning }]}>{attendance.tardyCount}</Text>
               <Text style={[styles.statLabel, { color: colors.gray }]}>Tardy</Text>
             </View>
             <View style={styles.attendanceStat}>
               <Text style={[styles.statNum, { color: colors.primary }]}>
-                {attendance.present + attendance.absent + attendance.tardy > 0
-                  ? Math.round((attendance.present / (attendance.present + attendance.absent + attendance.tardy)) * 100)
+                {attendance.presentCount + attendance.absentCount + attendance.tardyCount > 0
+                  ? Math.round((attendance.presentCount / (attendance.presentCount + attendance.absentCount + attendance.tardyCount)) * 100)
                   : 0}%
               </Text>
               <Text style={[styles.statLabel, { color: colors.gray }]}>Rate</Text>

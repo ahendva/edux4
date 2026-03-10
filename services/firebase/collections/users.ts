@@ -22,6 +22,7 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
     if (!userSnap.exists()) return null;
 
     const data = userSnap.data();
+    if (!data) return null;
     return {
       id: userId,
       username: data.username || '',

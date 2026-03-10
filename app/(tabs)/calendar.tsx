@@ -42,7 +42,7 @@ export default function CalendarScreen() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [refreshing, setRefreshing] = useState(false);
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<{ scrollTo(opts: { y: number; animated?: boolean }): void } | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -94,7 +94,7 @@ export default function CalendarScreen() {
       <Calendar
         markingType="multi-dot"
         markedDates={markedDates}
-        onDayPress={day => {
+        onDayPress={(day: { dateString: string }) => {
           setSelectedDate(prev => (prev === day.dateString ? '' : day.dateString));
         }}
         theme={{

@@ -32,7 +32,7 @@ export interface ThemeColors {
   tint: string;
   tabIconDefault: string;
   tabIconSelected: string;
-  [key: string]: string;
+  [key: string]: string | undefined;
 }
 
 export const createThemedStyles = (colors: ThemeColors) => {

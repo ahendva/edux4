@@ -7,9 +7,12 @@ interface SkeletonCardProps {
   style?: ViewStyle;
   lines?: number;
   hasIcon?: boolean;
+  // React's key prop — declared here so TS accepts it in JSX when @types/react isn't installed
+  key?: string | number;
 }
 
-function SkeletonLine({ width, height = 14 }: { width: string | number; height?: number }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function SkeletonLine({ width, height = 14 }: { width: string | number; height?: number; key?: string | number }) {
   const { colors } = useTheme();
   const opacity = useRef(new Animated.Value(0.4)).current;
 

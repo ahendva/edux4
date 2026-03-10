@@ -27,6 +27,8 @@
     "expo-env.d.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "functions",
+    "__tests__"
   ]
 }

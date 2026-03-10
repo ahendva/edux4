@@ -115,7 +115,7 @@ export default function EventDetailScreen() {
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={[styles.headerCard, { backgroundColor: colors.primary }]}>
-        <Ionicons name={EVENT_ICONS[event.type]} size={36} color="rgba(255,255,255,0.8)" />
+        <Ionicons name={EVENT_ICONS[event.type as EventType]} size={36} color="rgba(255,255,255,0.8)" />
         <Text style={styles.eventTitle}>{event.title}</Text>
         <View style={[styles.typeBadge, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
           <Text style={styles.typeText}>{event.type.charAt(0).toUpperCase() + event.type.slice(1)}</Text>
