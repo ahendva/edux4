@@ -2,11 +2,13 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 type TabBarIconProps = { color: string; size: number };
 
 export default function TabLayout() {
   const { colors } = useTheme();
+  const { isAdmin } = useAuth();
 
   return (
     <Tabs screenOptions={{
@@ -53,6 +55,14 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, size }: TabBarIconProps) => <Ionicons name="person-outline" size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="admin"
+        options={{
+          title: 'Admin',
+          href: isAdmin ? undefined : null,
+          tabBarIcon: ({ color, size }: TabBarIconProps) => <Ionicons name="settings-outline" size={size} color={color} />,
         }}
       />
     </Tabs>

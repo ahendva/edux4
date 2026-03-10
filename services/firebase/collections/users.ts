@@ -55,6 +55,7 @@ export const initializeUserProfile = async (
   email: string,
   username: string,
   role: UserRole = 'parent',
+  language = 'en',
 ): Promise<void> => {
   try {
     const userRef = doc(firestore, 'users', userId);
@@ -65,7 +66,7 @@ export const initializeUserProfile = async (
       displayName,
       email,
       role,
-      language: 'en',
+      language,
       children: [],
       connections: [],
       classrooms: [],

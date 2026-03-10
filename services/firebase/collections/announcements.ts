@@ -62,3 +62,22 @@ export const pinAnnouncement = async (classroomId: string, announcementId: strin
 export const deleteAnnouncement = async (classroomId: string, announcementId: string): Promise<void> => {
   await deleteDoc(doc(firestore, 'classrooms', classroomId, 'announcements', announcementId));
 };
+
+/** Returns announcements created after `lastSeenAt` timestamp (unread ones). */
+export const getUnreadAnnouncements = async (
+  classroomId: string,
+  lastSeenAt: number,
+): Promise<Announcement[]> => {
+  try {
+    const q = query(
+      collection(firestore, 'classrooms', classroomId, 'announcements'),
+      orderBy('createdAt', 'desc'),
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs
+      .map(d => ({ id: d.id, ...d.data() } as Announcement))
+      .filter(a => (a.createdAt ?? 0) > lastSeenAt);
+  } catch {
+    return [];
+  }
+};

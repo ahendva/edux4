@@ -1,6 +1,7 @@
 // context/AuthContext.tsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { User } from 'firebase/auth';
+import NetInfo from '@react-native-community/netinfo';
 import {
   signUp,
   signIn,
@@ -22,7 +23,13 @@ interface AuthContextType {
   user: User | null;
   userProfile: UserProfile | null;
   loading: boolean;
-  signUp: (email: string, password: string, displayName: string, username: string, role?: UserRole) => Promise<User>;
+  /** True when the current user has role === 'admin' */
+  isAdmin: boolean;
+  /** True when device has no network connection */
+  isOffline: boolean;
+  /** ISO 639-1 language code from the user's profile, defaults to 'en' */
+  userLanguage: string;
+  signUp: (email: string, password: string, displayName: string, username: string, role?: UserRole, language?: string) => Promise<User>;
   signIn: (email: string, password: string) => Promise<User>;
   logOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -38,6 +45,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(true);
+  const [isOffline, setIsOffline] = useState(false);
+
+  // Track network connectivity
+  useEffect(() => {
+    const unsub = NetInfo.addEventListener(state => {
+      setIsOffline(state.isConnected === false);
+    });
+    return () => unsub();
+  }, []);
 
   const refreshUserProfile = async () => {
     if (user) {
@@ -51,12 +67,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    const unsubscribe = subscribeToAuthChanges(async (user) => {
-      setUser(user);
+    const unsubscribe = subscribeToAuthChanges(async (authUser) => {
+      setUser(authUser);
 
-      if (user) {
+      if (authUser) {
         try {
-          const profile = await getUserProfile(user.uid);
+          const profile = await getUserProfile(authUser.uid);
           setUserProfile(profile);
         } catch (error) {
           console.error("Error fetching user profile:", error);
@@ -73,20 +89,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, [initializing]);
 
+  const isAdmin = userProfile?.role === 'admin';
+  const userLanguage = userProfile?.language || 'en';
+
   const value: AuthContextType = {
     user,
     userProfile,
     loading,
-    signUp: async (email, password, displayName, username, role = 'parent') => {
-      const user = await signUp(email, password, displayName, username, role);
-      await logUserLogin(user.uid);
+    isAdmin,
+    isOffline,
+    userLanguage,
+    signUp: async (email, password, displayName, username, role = 'parent', language) => {
+      const newUser = await signUp(email, password, displayName, username, role, language);
+      await logUserLogin(newUser.uid);
       await refreshUserProfile();
-      return user;
+      return newUser;
     },
     signIn: async (email, password) => {
-      const user = await signIn(email, password);
+      const loggedInUser = await signIn(email, password);
       await refreshUserProfile();
-      return user;
+      return loggedInUser;
     },
     logOut: async () => {
       await logOut();

@@ -141,3 +141,35 @@ export const deleteMessage = async (
 ): Promise<void> => {
   await deleteDoc(doc(firestore, 'conversations', conversationId, 'messages', messageId));
 };
+
+/** Returns the number of unread messages in a conversation for the given user. */
+export const getUnreadCount = async (
+  conversationId: string,
+  userId: string,
+): Promise<number> => {
+  try {
+    const q = query(
+      collection(firestore, 'conversations', conversationId, 'messages'),
+      orderBy('createdAt', 'desc'),
+      limit(100),
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.filter(
+      d => !((d.data().readBy as string[]) || []).includes(userId),
+    ).length;
+  } catch {
+    return 0;
+  }
+};
+
+/** Returns the total unread message count across all of the user's conversations.
+ *  Uses the `unreadCounts` map on each Conversation document (cheap read). */
+export const getTotalUnreadCount = async (
+  userId: string,
+  conversations: Array<{ unreadCounts?: Record<string, number> }>,
+): Promise<number> => {
+  return conversations.reduce(
+    (sum, conv) => sum + (conv.unreadCounts?.[userId] ?? 0),
+    0,
+  );
+};

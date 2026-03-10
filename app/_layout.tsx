@@ -10,6 +10,7 @@ import { ThemeProvider, useTheme } from '../context/ThemeContext';
 import { createHeaderOptions } from '../styles/headerStyles';
 import { useStyles, FONTS } from '../styles';
 import { initMonitoring, setUserContext, clearUserContext } from '../services/monitoring';
+import OfflineBanner from '../components/ui/OfflineBanner';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -57,6 +58,7 @@ function AppWithTheme() {
     <>
       <AuthRedirect />
       <StatusBar barStyle={barStyle} />
+      <OfflineBanner />
       <Stack screenOptions={{ ...defaultHeaderOptions, headerShown: true }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="auth" options={{ headerShown: false }} />

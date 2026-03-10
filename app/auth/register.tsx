@@ -55,7 +55,9 @@ export default function RegisterScreen() {
         return;
       }
 
-      await signUp(email, password, name, username.toLowerCase(), role);
+      // Detect device locale — extract ISO 639-1 language code (first 2 chars)
+      const deviceLang = (Intl.DateTimeFormat().resolvedOptions().locale || 'en').slice(0, 2).toLowerCase();
+      await signUp(email, password, name, username.toLowerCase(), role, deviceLang);
       router.replace('/(tabs)');
     } catch (error: any) {
       let message = 'Failed to create an account. Please try again.';

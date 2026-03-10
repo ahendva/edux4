@@ -21,6 +21,7 @@ export const signUp = async (
   displayName: string,
   username: string,
   role: UserRole = 'parent',
+  language = 'en',
 ): Promise<User> => {
   try {
     if (!email || !password || !displayName || !username) {
@@ -32,7 +33,7 @@ export const signUp = async (
 
     await updateProfile(user, { displayName });
     await sendEmailVerification(user);
-    await initializeUserProfile(user.uid, displayName, email, username, role);
+    await initializeUserProfile(user.uid, displayName, email, username, role, language);
 
     return user;
   } catch (error) {

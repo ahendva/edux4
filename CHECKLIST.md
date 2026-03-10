@@ -79,7 +79,7 @@ Append `?expansions=<list>` to student requests to include nested objects:
 
 ### 0.2 Runtime Verification
 - [ ] Run `npx expo start` — app boots to login screen without JS errors
-- [ ] Run `npx tsc --noEmit` — zero type errors in clean repo
+- [x] Run `npx tsc --noEmit` — zero type errors in clean repo
 - [ ] Run `npx expo start --platform ios` — no iOS-specific crash
 - [ ] Run `npx expo start --platform android` — no Android-specific crash
 
@@ -138,23 +138,23 @@ Append `?expansions=<list>` to student requests to include nested objects:
 - [x] `services/firebase/schema.ts` — UserProfile, Classroom, Student, Conversation, Message, CalendarEvent, ProgressReport, Announcement, ConnectionRequest, SyncStatus, SubjectGrade
 - [x] `lib/types/models.ts` — Re-export schema types + utility types (`WithTimestamps<T>`, `CreateInput<T>`)
 - [x] `lib/types/index.ts` — Barrel re-export
-- [ ] Add `preferredLanguage: string` to `UserProfile` (ISO 639-1 code, e.g. `"es"`)
-- [ ] Add `fcmToken?: string` to `UserProfile` (for push notifications)
-- [ ] Add `notificationPreferences` object to `UserProfile`:
+- [x] Add `preferredLanguage: string` to `UserProfile` (ISO 639-1 code, e.g. `"es"`)
+- [x] Add `fcmToken?: string` to `UserProfile` (for push notifications)
+- [x] Add `notificationPreferences` object to `UserProfile`:
   - `messages: boolean`
   - `announcements: boolean`
   - `events: boolean`
   - `reports: boolean`
   - `connectionRequests: boolean`
-- [ ] Add `linkedStudentIds: string[]` to parent `UserProfile` (PS-matched children)
-- [ ] Add `psStaffId?: string` to teacher `UserProfile`
-- [ ] Add `gradeLevel?: string` field to `Classroom` (e.g. `"9"`, `"10"`)
-- [ ] Add `termId?: string` field to `Classroom`
-- [ ] Add `isArchived: boolean` to `Classroom`
-- [ ] Add `rsvpCounts: { yes: number; no: number; maybe: number }` to `CalendarEvent`
-- [ ] Add `isRecurring: boolean` + `recurrenceRule?: string` to `CalendarEvent`
-- [ ] Add `attachments?: Attachment[]` to `Message` where `Attachment = { url: string; name: string; type: string }`
-- [ ] Add `translatedContent?: Record<string, string>` to `Message` (keyed by ISO language code)
+- [x] Add `linkedStudentIds: string[]` to parent `UserProfile` (PS-matched children)
+- [x] Add `psStaffId?: string` to teacher `UserProfile`
+- [x] Add `gradeLevel?: string` field to `Classroom` (e.g. `"9"`, `"10"`)
+- [x] Add `termId?: string` field to `Classroom`
+- [x] Add `isArchived: boolean` to `Classroom`
+- [x] Add `rsvpCounts: { yes: number; no: number; maybe: number }` to `CalendarEvent`
+- [x] Add `isRecurring: boolean` + `recurrenceRule?: string` to `CalendarEvent`
+- [x] Add `attachments?: Attachment[]` to `Message` where `Attachment = { url: string; name: string; type: string }`
+- [x] Add `translatedContent?: Record<string, string>` to `Message` (keyed by ISO language code)
 - [ ] Add `isRead: boolean` to `Announcement`
 - [ ] Add `psGuardianId?: string` to `Student` for guardian matching
 
@@ -190,16 +190,16 @@ Append `?expansions=<list>` to student requests to include nested objects:
 - [x] `app/auth/edit-profile.tsx`
 
 ### 4.1 Schema-Driven Auth Additions
-- [ ] `app/auth/register.tsx` — save `preferredLanguage` from device locale on register
+- [x] `app/auth/register.tsx` — save `preferredLanguage` from device locale on register
 - [ ] `app/auth/edit-profile.tsx` — add language picker (select from supported languages)
 - [ ] `app/auth/edit-profile.tsx` — add notification preferences toggle section
-- [ ] `services/firebase/collections/users.ts` — add `updateFcmToken(uid, token)` function
-- [ ] `services/firebase/collections/users.ts` — add `getTeachersInClassrooms(classroomIds)` helper
-- [ ] `services/firebase/collections/users.ts` — add `linkStudentToParent(parentUid, studentId)` helper
+- [x] `services/firebase/collections/users.ts` — add `updateFcmToken(uid, token)` function
+- [x] `services/firebase/collections/users.ts` — add `getTeachersInClassrooms(classroomIds)` helper
+- [x] `services/firebase/collections/users.ts` — add `linkStudentToParent(parentUid, studentId)` helper
 
 ### 4.2 Admin Role
 - [ ] Add `admin` as valid role in `UserProfile.role` type union
-- [ ] Update `AuthContext` to expose `isAdmin` computed boolean
+- [x] Update `AuthContext` to expose `isAdmin` computed boolean
 - [ ] Update `register.tsx` — admin registration requires an invite code (prevent open admin signup)
 
 ---
@@ -216,25 +216,25 @@ Append `?expansions=<list>` to student requests to include nested objects:
 - [x] `services/firebase/collections/progressReports.ts`
 
 ### 5.1 Missing Functions
-- [ ] `classrooms.ts` — `archiveClassroom(id)` sets `isArchived: true`
-- [ ] `classrooms.ts` — `getActiveClassrooms(userId)` filters out archived
-- [ ] `messages.ts` — `getUnreadCount(conversationId, userId)` returns number
-- [ ] `messages.ts` — `getTotalUnreadCount(userId)` across all conversations
-- [ ] `messages.ts` — `saveTranslation(messageId, lang, text)` writes to `translatedContent`
-- [ ] `events.ts` — `getRSVPStatus(eventId, userId)` returns yes/no/maybe/null
-- [ ] `announcements.ts` — `getUnreadAnnouncements(classroomId, userId)` — unread since last seen
-- [ ] `progressReports.ts` — `getReportsForParent(parentUid)` — via linked studentIds
-- [ ] Add `students.ts` collection service:
+- [x] `classrooms.ts` — `archiveClassroom(id)` sets `isArchived: true`
+- [x] `classrooms.ts` — `getActiveClassrooms(userId)` filters out archived
+- [x] `messages.ts` — `getUnreadCount(conversationId, userId)` returns number
+- [x] `messages.ts` — `getTotalUnreadCount(userId)` across all conversations
+- [x] `messages.ts` — `saveTranslation(messageId, lang, text)` writes to `translatedContent`
+- [x] `events.ts` — `getRSVPStatus(eventId, userId)` returns yes/no/maybe/null
+- [x] `announcements.ts` — `getUnreadAnnouncements(classroomId, userId)` — unread since last seen
+- [x] `progressReports.ts` — `getReportsForParent(parentUid)` — via linked studentIds
+- [x] Add `students.ts` collection service:
   - [ ] `getStudent(id)`
   - [ ] `getStudentsInClassroom(classroomId)`
   - [ ] `getStudentsForParent(parentUid)`
   - [ ] `updateStudent(id, data)`
 
 ### 5.2 Real-time Listeners
-- [ ] `messages.ts` — `subscribeToMessages(conversationId, callback)` — Firestore `onSnapshot`
-- [ ] `conversations.ts` — `subscribeToConversations(userId, callback)` — live unread badges
-- [ ] `announcements.ts` — `subscribeToAnnouncements(classroomId, callback)`
-- [ ] `events.ts` — `subscribeToUpcomingEvents(classroomIds, callback)`
+- [x] `messages.ts` — `subscribeToMessages(conversationId, callback)` — Firestore `onSnapshot`
+- [x] `conversations.ts` — `subscribeToConversations(userId, callback)` — live unread badges
+- [x] `announcements.ts` — `subscribeToAnnouncements(classroomId, callback)`
+- [x] `events.ts` — `subscribeToUpcomingEvents(classroomIds, callback)`
 
 ---
 
@@ -368,16 +368,16 @@ Append `?expansions=<list>` to student requests to include nested objects:
 - [x] `app/messages/[id].tsx` (shell)
 - [x] `app/messages/new.tsx` (shell)
 
-- [ ] `messages/[id].tsx` — Wire `subscribeToMessages(conversationId, cb)` → live message feed
-- [ ] `messages/[id].tsx` — Wire `sendMessage()` on submit, clear input on success
-- [ ] `messages/[id].tsx` — Call `markAsRead()` when screen mounts and on new message
+- [x] `messages/[id].tsx` — Wire `subscribeToMessages(conversationId, cb)` → live message feed
+- [x] `messages/[id].tsx` — Wire `sendMessage()` on submit, clear input on success
+- [x] `messages/[id].tsx` — Call `markAsRead()` when screen mounts and on new message
 - [ ] `messages/[id].tsx` — Implement translation toggle:
   - Show original / translated toggle button per message
   - Call translation service if `translatedContent[userLang]` not cached
   - Show loading indicator during translation
 - [ ] `messages/[id].tsx` — File attachment picker (image/PDF) → upload via `storageService`, send URL in message
 - [ ] `messages/[id].tsx` — Keyboard-aware scroll (scroll to bottom on keyboard open)
-- [ ] `messages/[id].tsx` — Long-press message → delete (own messages only)
+- [x] `messages/[id].tsx` — Long-press message → delete (own messages only)
 - [ ] `messages/new.tsx` — Search connections by name, show role badge
 - [ ] `messages/new.tsx` — Disable "Send" if no recipient or empty body
 - [ ] `messages/new.tsx` — Navigate to created conversation thread on success
@@ -391,10 +391,10 @@ Append `?expansions=<list>` to student requests to include nested objects:
 - [x] `app/classrooms/[id]/manage.tsx`
 - [x] `app/classrooms/[id]/students/[studentId].tsx`
 
-- [ ] `classrooms/[id].tsx` — Wire live announcements feed via `subscribeToAnnouncements()`
+- [x] `classrooms/[id].tsx` — Wire live announcements feed via `subscribeToAnnouncements()`
 - [ ] `classrooms/[id].tsx` — Wire live student roster from Firestore
-- [ ] `classrooms/[id].tsx` — Wire upcoming events for this classroom
-- [ ] `classrooms/[id].tsx` — Parent: show "Contact Teacher" button → opens `messages/new` pre-filled
+- [x] `classrooms/[id].tsx` — Wire upcoming events for this classroom
+- [x] `classrooms/[id].tsx` — Parent: show "Contact Teacher" button → opens `messages/new` pre-filled
 - [ ] `classrooms/[id]/admin.tsx` — Post announcement form with character limit (500 chars)
 - [ ] `classrooms/[id]/admin.tsx` — Create event shortcut with classroom pre-filled
 - [ ] `classrooms/[id]/admin.tsx` — Manage student roster: add by PS student ID or name search
@@ -447,9 +447,9 @@ Append `?expansions=<list>` to student requests to include nested objects:
 - [x] `app/connections/requests.tsx`
 - [x] `app/connections/[id].tsx`
 
-- [ ] `connections/index.tsx` — Wire `getUserProfile` for each connection, show role badge
-- [ ] `connections/index.tsx` — "Message" button → `messages/new` pre-filled with this user
-- [ ] `connections/requests.tsx` — Accept/reject buttons with loading state
+- [x] `connections/index.tsx` — Wire `getUserProfile` for each connection, show role badge
+- [x] `connections/index.tsx` — "Message" button → `messages/new` pre-filled with this user
+- [x] `connections/requests.tsx` — Accept/reject buttons with loading state
 - [ ] `connections/requests.tsx` — Show pending count badge on Connections tab
 - [ ] `connections/[id].tsx` — Show classrooms in common
 - [ ] `connections/[id].tsx` — Show student in common (if parent + teacher share a child)
@@ -478,7 +478,7 @@ Append `?expansions=<list>` to student requests to include nested objects:
   - `setCachedTranslation(messageId, lang, text): void`
 
 ### 9.2 Integration
-- [ ] `services/firebase/collections/messages.ts` — `saveTranslation(messageId, lang, text)`
+- [x] `services/firebase/collections/messages.ts` — `saveTranslation(messageId, lang, text)`
   - Writes to `messages/{id}.translatedContent.{lang}`
   - Cache in AsyncStorage
 - [ ] `messages/[id].tsx` — Translation toggle button (globe icon) per message bubble
@@ -486,7 +486,7 @@ Append `?expansions=<list>` to student requests to include nested objects:
   - Second tap: revert to original
   - Show spinner during translation
 - [ ] `app/auth/edit-profile.tsx` — Language picker (list of ~10 supported languages)
-- [ ] `context/AuthContext.tsx` — Expose `userLanguage` derived from `UserProfile.preferredLanguage`
+- [x] `context/AuthContext.tsx` — Expose `userLanguage` derived from `UserProfile.preferredLanguage`
 - [ ] Auto-translate on receive: in `subscribeToMessages`, if incoming message lang ≠ user lang, auto-translate and cache (background, don't block render)
 
 ### 9.3 Supported Languages (initial set)
@@ -670,7 +670,7 @@ service cloud.firestore {
   - [ ] "Sync Students", "Sync Sections", etc. — per-collection sync buttons
   - [ ] Error log: show `sync_status.{collection}.error` if set
 - [ ] `app/admin/sync-status.tsx` — Detailed sync status with retry button per collection
-- [ ] Update `app/(tabs)/_layout.tsx` — show Admin tab only when `isAdmin == true`
+- [x] Update `app/(tabs)/_layout.tsx` — show Admin tab only when `isAdmin == true`
 
 ### 12.2 Guardian → Parent Account Linking
 - [ ] After `syncGuardians()` runs, show in Admin dashboard:
@@ -803,8 +803,8 @@ service cloud.firestore {
 ### 14.4 Offline Support
 - [ ] Enable Firestore offline persistence in `firebaseConfig.ts`
   - `enableMultiTabIndexedDbPersistence` (web) or built-in RN persistence
-- [ ] `context/AuthContext.tsx` — expose `isOffline: boolean` using NetInfo
-- [ ] `components/ui/OfflineBanner.tsx` — sticky banner when `isOffline == true`
+- [x] `context/AuthContext.tsx` — expose `isOffline: boolean` using NetInfo
+- [x] `components/ui/OfflineBanner.tsx` — sticky banner when `isOffline == true`
 - [ ] Queue outgoing messages when offline via Firestore's local write queue (automatic with persistence)
 - [ ] Disable RSVP and other mutation buttons when offline with tooltip "Offline — cannot save"
 
