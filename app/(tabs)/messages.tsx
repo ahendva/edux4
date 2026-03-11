@@ -14,17 +14,23 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { subscribeToConversations } from '../../services/firebase/collections/conversations';
 import { Conversation } from '../../services/firebase/schema';
+import { SkeletonList } from '../../components/ui/SkeletonCard';
+import EmptyState from '../../components/ui/EmptyState';
 
 export default function MessagesScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const { colors } = useTheme();
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (!user) return;
-    const unsub = subscribeToConversations(user.uid, setConversations);
+    const unsub = subscribeToConversations(user.uid, (data) => {
+      setConversations(data);
+      setLoading(false);
+    });
     return unsub;
   }, [user]);
 
@@ -99,21 +105,25 @@ export default function MessagesScreen() {
         )}
       </View>
 
-      <FlatList
-        data={filtered}
-        keyExtractor={item => item.id}
-        renderItem={renderConversation}
-        contentContainerStyle={[styles.list, filtered.length === 0 && styles.listCenter]}
-        ListEmptyComponent={
-          <View style={styles.empty}>
-            <Ionicons name="chatbubbles-outline" size={52} color={colors.gray} />
-            <Text style={[styles.emptyTitle, { color: colors.text }]}>No messages yet</Text>
-            <Text style={[styles.emptySub, { color: colors.gray }]}>
-              Start a conversation with your child's teacher
-            </Text>
-          </View>
-        }
-      />
+      {loading ? (
+        <SkeletonList count={6} />
+      ) : (
+        <FlatList
+          data={filtered}
+          keyExtractor={item => item.id}
+          renderItem={renderConversation}
+          contentContainerStyle={[styles.list, filtered.length === 0 && styles.listCenter]}
+          ListEmptyComponent={
+            <EmptyState
+              icon="chatbubbles-outline"
+              title="No messages yet"
+              subtitle="Start a conversation with your child's teacher"
+              actionLabel="New Message"
+              onAction={() => router.push('/messages/new')}
+            />
+          }
+        />
+      )}
 
       {/* FAB */}
       <TouchableOpacity
@@ -171,9 +181,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   badgeText: { color: '#fff', fontSize: 12, fontWeight: 'bold' },
-  empty: { alignItems: 'center', paddingTop: 60 },
-  emptyTitle: { fontSize: 17, fontWeight: '600', marginTop: 14 },
-  emptySub: { fontSize: 14, marginTop: 6, textAlign: 'center', paddingHorizontal: 32 },
   fab: {
     position: 'absolute',
     bottom: 24,

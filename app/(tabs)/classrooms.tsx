@@ -7,12 +7,15 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { getUserClassrooms } from '../../services/firebase/collections/classrooms';
 import { Classroom } from '../../services/firebase/schema';
+import { SkeletonList } from '../../components/ui/SkeletonCard';
+import EmptyState from '../../components/ui/EmptyState';
 
 export default function ClassroomsScreen() {
   const router = useRouter();
   const { user, userProfile } = useAuth();
   const { colors } = useTheme();
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const loadClassrooms = async () => {
@@ -22,6 +25,8 @@ export default function ClassroomsScreen() {
       setClassrooms(data);
     } catch (error) {
       console.error('Error loading classrooms:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,6 +57,14 @@ export default function ClassroomsScreen() {
     </TouchableOpacity>
   );
 
+  if (loading) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <SkeletonList count={5} />
+      </View>
+    );
+  }
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
@@ -61,13 +74,13 @@ export default function ClassroomsScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
-          <View style={styles.empty}>
-            <Ionicons name="school-outline" size={48} color={colors.gray} />
-            <Text style={[styles.emptyText, { color: colors.gray }]}>No classrooms yet</Text>
-            <Text style={[styles.emptySubtext, { color: colors.gray }]}>
-              {userProfile?.role === 'teacher' ? 'Create a classroom to get started' : 'Ask a teacher to add you'}
-            </Text>
-          </View>
+          <EmptyState
+            icon="school-outline"
+            title="No classrooms yet"
+            subtitle={userProfile?.role === 'teacher' ? 'Create a classroom to get started' : 'Ask a teacher to add you'}
+            actionLabel={userProfile?.role === 'teacher' ? 'Create Classroom' : undefined}
+            onAction={userProfile?.role === 'teacher' ? () => router.push('/classrooms/create') : undefined}
+          />
         }
       />
 
@@ -92,8 +105,5 @@ const styles = StyleSheet.create({
   className: { fontSize: 16, fontWeight: '600' },
   classSubject: { fontSize: 13, marginTop: 2 },
   classMeta: { fontSize: 12, marginTop: 2 },
-  empty: { alignItems: 'center', paddingTop: 80 },
-  emptyText: { fontSize: 16, fontWeight: '600', marginTop: 12 },
-  emptySubtext: { fontSize: 14, marginTop: 4, textAlign: 'center' },
   fab: { position: 'absolute', bottom: 24, right: 24, width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5 },
 });

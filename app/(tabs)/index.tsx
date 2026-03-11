@@ -7,6 +7,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { getConversations } from '../../services/firebase/collections/conversations';
 import { getUpcomingEvents } from '../../services/firebase/collections/events';
+import { SkeletonList } from '../../components/ui/SkeletonCard';
+import EmptyState from '../../components/ui/EmptyState';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -14,6 +16,7 @@ export default function HomeScreen() {
   const { colors } = useTheme();
   const [unreadCount, setUnreadCount] = useState(0);
   const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const loadDashboard = async () => {
@@ -27,6 +30,8 @@ export default function HomeScreen() {
       setUpcomingEvents(events);
     } catch (error) {
       console.error('Error loading dashboard:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,11 +86,16 @@ export default function HomeScreen() {
       {/* Upcoming Events */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Upcoming Events</Text>
-        {upcomingEvents.length === 0 ? (
-          <View style={[styles.emptyCard, { backgroundColor: colors.surface }]}>
-            <Ionicons name="calendar-outline" size={32} color={colors.gray} />
-            <Text style={[styles.emptyText, { color: colors.gray }]}>No upcoming events</Text>
-          </View>
+        {loading ? (
+          <SkeletonList count={3} hasIcon={false} />
+        ) : upcomingEvents.length === 0 ? (
+          <EmptyState
+            icon="calendar-outline"
+            title="No upcoming events"
+            subtitle="Events from your classrooms will appear here"
+            actionLabel="View Calendar"
+            onAction={() => router.push('/(tabs)/calendar')}
+          />
         ) : (
           upcomingEvents.map((event) => (
             <View key={event.id} style={[styles.eventCard, { backgroundColor: colors.surface }]}>
@@ -118,8 +128,6 @@ const styles = StyleSheet.create({
   badgeText: { color: '#fff', fontSize: 11, fontWeight: 'bold' },
   section: { padding: 16 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
-  emptyCard: { alignItems: 'center', padding: 24, borderRadius: 12 },
-  emptyText: { marginTop: 8, fontSize: 14 },
   eventCard: { flexDirection: 'row', alignItems: 'center', padding: 16, borderRadius: 12, marginBottom: 8, gap: 12 },
   eventInfo: { flex: 1 },
   eventTitle: { fontSize: 15, fontWeight: '600' },
