@@ -766,22 +766,21 @@ service cloud.firestore {
 > **Goal:** Production-ready UX, performance, compliance, documentation.
 
 ### 14.1 Skeleton Loading States
-- [ ] Create `components/ui/SkeletonCard.tsx` — animated shimmer placeholder
-- [ ] Replace all spinners with skeleton cards on:
-  - [ ] Conversation list
-  - [ ] Classroom list
-  - [ ] Event list / calendar
+- [x] Create `components/ui/SkeletonCard.tsx` — animated shimmer placeholder
+- [x] Replace all spinners with skeleton cards on:
+  - [x] Conversation list (messages.tsx)
+  - [x] Classroom list (classrooms.tsx)
+  - [x] Event list / dashboard feed (index.tsx)
   - [ ] Progress report list
   - [ ] Student roster
-  - [ ] Dashboard feed
 
 ### 14.2 Empty States
-- [ ] Create `components/ui/EmptyState.tsx` — icon + title + subtitle + optional CTA button
-- [ ] Wire to every list screen:
-  - [ ] No messages → "Start a conversation with your child's teacher"
-  - [ ] No classrooms (parent) → "Ask your child's teacher to add you"
-  - [ ] No classrooms (teacher) → "Create your first classroom"
-  - [ ] No events → "No upcoming events"
+- [x] Create `components/ui/EmptyState.tsx` — icon + title + subtitle + optional CTA button
+- [x] Wire to every list screen:
+  - [x] No messages → "Start a conversation with your child's teacher"
+  - [x] No classrooms (parent) → "Ask your child's teacher to add you"
+  - [x] No classrooms (teacher) → "Create your first classroom"
+  - [x] No events → "No upcoming events"
   - [ ] No reports → "No progress reports yet"
   - [ ] No connections → "Connect with teachers to get started"
 
