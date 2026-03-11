@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Track network connectivity
   useEffect(() => {
-    const unsub = NetInfo.addEventListener(state => {
+    const unsub = NetInfo.addEventListener((state: { isConnected: boolean | null }) => {
       setIsOffline(state.isConnected === false);
     });
     return () => unsub();

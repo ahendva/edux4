@@ -29,6 +29,8 @@
   "exclude": [
     "node_modules",
     "functions",
-    "__tests__"
+    "__tests__",
+    "types/rn-shim.d.ts",
+    "types/firebase-shim.d.ts"
   ]
 }

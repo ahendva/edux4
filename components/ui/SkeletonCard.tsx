@@ -29,10 +29,8 @@ function SkeletonLine({ width, height = 14 }: { width: string | number; height?:
 
   return (
     <Animated.View
-      style={[
-        styles.line,
-        { width, height, backgroundColor: colors.surfaceSubtle, opacity },
-      ]}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      style={[styles.line, { width: width as any, height, backgroundColor: colors.surfaceSubtle, opacity }]}
     />
   );
 }

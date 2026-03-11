@@ -39,7 +39,7 @@ describe('Schema type checks', () => {
     expect(profile.connections).toEqual([]);
   });
 
-  it('Student has attendanceSummary field', () => {
+  it('Student has attendanceSummary field with correct field names', () => {
     const student: Student = {
       id: 's1',
       firstName: 'Jane',
@@ -48,9 +48,16 @@ describe('Schema type checks', () => {
       classroomIds: [],
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      attendanceSummary: { present: 10, absent: 2, tardy: 1, lastUpdated: Date.now() },
+      attendanceSummary: {
+        presentCount: 10,
+        absentCount: 2,
+        tardyCount: 1,
+        excusedCount: 0,
+        lastUpdated: Date.now(),
+      },
     };
-    expect(student.attendanceSummary?.present).toBe(10);
+    expect(student.attendanceSummary?.presentCount).toBe(10);
+    expect(student.attendanceSummary?.absentCount).toBe(2);
   });
 
   it('CalendarEvent has classroomIds and rsvpCounts', () => {

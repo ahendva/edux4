@@ -42,7 +42,7 @@ export default function CalendarScreen() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [refreshing, setRefreshing] = useState(false);
-  const scrollRef = useRef<{ scrollTo(opts: { y: number; animated?: boolean }): void } | null>(null);
+  const scrollRef = useRef<ScrollView | null>(null);
 
   useEffect(() => {
     if (!user) return;

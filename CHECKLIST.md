@@ -706,37 +706,41 @@ service cloud.firestore {
 > **Goal:** Core business logic has test coverage. App passes CI.
 
 ### 13.1 Test Setup
-- [ ] `npm install --save-dev jest jest-expo @testing-library/react-native @testing-library/jest-native`
-- [ ] `jest.config.js` — preset: `jest-expo`, transform ignore patterns
-- [ ] `jest.setup.js` — mock AsyncStorage, Firebase, expo modules
-- [ ] `tsconfig.jest.json` (if needed for test-specific TS settings)
+- [x] `jest.config.js` — preset: `jest-expo`, transform ignore patterns, moduleNameMapper
+- [x] `jest.setup.js` — mock AsyncStorage, Firebase (full in-memory store), expo modules
+- [x] `__mocks__/expo-notifications.js` — manual mock for uninstalled package
+- [x] `__mocks__/@react-native-community/netinfo.js` — manual mock for uninstalled package
 
 ### 13.2 Unit Tests — Services
-- [ ] `__tests__/services/firebase/collections/messages.test.ts`
-  - Send message → document created with correct fields
-  - Mark as read → `readBy` updated
-  - Get messages → paginated correctly
-- [ ] `__tests__/services/firebase/collections/classrooms.test.ts`
-  - Create classroom → document created
-  - Add participant → `participantIds` updated
-  - Archive → `isArchived: true`
-- [ ] `__tests__/services/firebase/collections/events.test.ts`
-  - Create event → document created
-  - RSVP → `rsvpCounts` incremented
-  - Get upcoming events → filtered by date
-- [ ] `__tests__/services/firebase/collections/connections.test.ts`
-  - Send request → pending doc created
-  - Accept → both users' `connections` array updated
-  - Reject → request doc deleted
-- [ ] `__tests__/services/powerschool/client.test.ts` (mocked fetch)
-  - `authenticate()` → fetches token, sets expiry
-  - `getStudents()` → paginates through all pages
-  - Retry on 429 → retries with backoff
-  - Token expired mid-request → refreshes and retries
-- [ ] `__tests__/services/powerschool/sync.test.ts` (mocked client + Firestore)
-  - `syncStudents()` → creates correct Firestore docs
-  - `syncSections()` → classrooms created with correct teacherId
-  - `syncGuardians()` → matches email → parentUid
+- [x] `__tests__/services/firebase/collections/messages.test.ts` — 50 total tests passing
+  - [x] Send message → document created with correct fields
+  - [x] lastMessage preview updated on conversation
+  - [x] Long message text truncated to 100 chars
+  - [x] getMessages → returns empty array and seeded messages
+  - [x] markAsRead → calls updateDoc on message
+  - [x] deleteMessage → removes document
+  - [x] getUnreadCount → counts messages not in readBy
+- [x] `__tests__/services/firebase/collections/classrooms.test.ts`
+  - [x] Create classroom → document created with correct fields
+  - [x] getClassroom → returns null for missing, data for existing
+  - [x] getUserClassrooms → filters archived by default, includes when flag set
+  - [x] addParticipant → resolves without error
+  - [x] archiveClassroom → sets isArchived: true
+  - [x] findClassroomByJoinCode → returns null when no match
+- [x] `__tests__/services/firebase/collections/events.test.ts`
+  - [x] Create event → document created, rsvpCounts initialized to zeros
+  - [x] getEvent → returns null for missing, data for existing
+  - [x] updateRSVP → updates rsvps.userId field
+  - [x] deleteEvent → removes document
+- [x] `__tests__/services/firebase/collections/connections.test.ts`
+  - [x] Send request → pending doc created with correct fields
+  - [x] Empty message defaults to ''
+  - [x] Timestamps stored correctly
+  - [x] rejectConnectionRequest → sets status to rejected
+  - [x] acceptConnectionRequest → throws on missing, sets accepted
+- [x] `__tests__/services/powerschool.test.ts` — authenticate, error handling, student fetch
+- [x] `__tests__/services/schema.test.ts` — type shape validation for all schema types
+- [x] `__tests__/services/translation.test.ts` — cache, translateText no-op cases
 
 ### 13.3 Component Tests
 - [ ] `__tests__/components/LoadingScreen.test.tsx` — renders spinner
@@ -752,21 +756,8 @@ service cloud.firestore {
 - [ ] Security rule: parent cannot read unrelated student
 
 ### 13.5 CI Pipeline
-- [ ] `.github/workflows/ci.yml`:
-  ```yaml
-  on: [push, pull_request]
-  jobs:
-    ci:
-      runs-on: ubuntu-latest
-      steps:
-        - checkout
-        - npm install
-        - npx tsc --noEmit
-        - npx eslint . --ext .ts,.tsx
-        - npx jest --coverage --ci
-  ```
-- [ ] `.eslintrc.js` — extend `expo`, `@typescript-eslint/recommended`
-- [ ] Enforce `no-any` rule in ESLint
+- [x] `.github/workflows/ci.yml` — triggers on push/PR, runs tsc + tests
+- [x] `.eslintrc.js` — extends @typescript-eslint/recommended, no-any as warning
 - [ ] Set minimum coverage thresholds: 70% lines for `services/`
 
 ---

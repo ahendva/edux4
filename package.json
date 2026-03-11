@@ -11,9 +11,6 @@
     "test:ci": "jest --watchAll=false --no-coverage --ci",
     "lint": "expo lint"
   },
-  "jest": {
-    "preset": "jest-expo"
-  },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.2.3",
     "@expo/vector-icons": "^14.0.2",

@@ -3,10 +3,14 @@ import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import {
   initializeAuth,
   getAuth,
-  getReactNativePersistence,
   inMemoryPersistence,
   Auth,
 } from "firebase/auth";
+
+// getReactNativePersistence is in the RN-specific firebase/auth bundle but not
+// in the browser TypeScript types — access at runtime to avoid the type error.
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+const { getReactNativePersistence } = require('firebase/auth') as { getReactNativePersistence: (s: unknown) => import('firebase/auth').Persistence };
 import { getFirestore, Firestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { Platform } from 'react-native';

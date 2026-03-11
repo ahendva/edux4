@@ -12,7 +12,7 @@ export default function OfflineBanner() {
     // Try to import NetInfo; gracefully skip if not installed
     let unsubscribe: (() => void) | null = null;
     try {
-      unsubscribe = NetInfo.addEventListener(state => {
+      unsubscribe = NetInfo.addEventListener((state: { isConnected: boolean | null }) => {
         const offline = !state.isConnected;
         setIsOffline(offline);
         Animated.timing(translateY, {
